@@ -1,2 +1,2 @@
 # MedBlocks
-A project committed to make medical services decentralized in medical institutions and infrastructure
+A project committed to making medical services decentralized in medical institutions and infrastructure
