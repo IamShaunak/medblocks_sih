@@ -17,8 +17,8 @@ defaultNetwork: "hardhat",
 networks: {
   hardhat: {},
   polygon: {
-    url: API_URL,
-    accounts: [`0x${PRIVATE_KEY}`],
+    url: process.env.API_URL,
+    accounts: [`0x${process.env.PRIVATE_KEY}`],
   }
 }
 };
