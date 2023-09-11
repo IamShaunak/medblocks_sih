@@ -1,6 +1,6 @@
 async function main() {
     // Grab the contract factory 
-    const MyToken = await ethers.getContractFactory("MyToken");
+    const MyToken = await ethers.getContractFactory("MedBlocksToken");
   
     // Start deployment, returning a promise that resolves to a contract object
     const myToken = await MyToken.deploy(); // Instance of the contract 
