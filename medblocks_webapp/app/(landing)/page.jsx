@@ -2,10 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from "../../src/components/Navbar";
+import "./walletbutton.css";
+
+const ethers = require('ethers');
 
 export default function Home() {
   const [contentVisible, setContentVisible] = useState(false);
   const [chatVisible, setChatVisible] = useState(false);
+  const [connectedAddress, setConnectedAddress] = useState('');
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const toggleChat = () => {
     setChatVisible(!chatVisible);
@@ -23,6 +28,30 @@ export default function Home() {
   const paragraphVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.6 } },
+  };
+
+  const connectWallet = async () => {
+    try {
+      // Check if MetaMask is available
+      if (window.ethereum) {
+        // Request access to the user's Ethereum accounts
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        // Get the Ethereum provider from MetaMask
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        // Get the connected Ethereum address
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        setConnectedAddress(address);
+        setShowTooltip(true);
+        console.log(`Connected wallet address: ${address}`);
+        // You can now use 'signer' to interact with Ethereum
+      } else {
+        // MetaMask is not available, handle accordingly
+        console.error('MetaMask is not available');
+      }
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+    }
   };
 
   return (
@@ -65,8 +94,24 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.9 }}
           >
-            <button className="bg-blue-500 md:py-2 md:px-4 py-2 px-3 hover:bg-blue-600 text-white rounded-full transform hover:scale-105 transition duration-300">
-              Connect Wallet
+             <button
+              onClick={connectWallet}
+              className="bg-blue-500 md:py-2 md:px-4 py-2 px-3 hover:bg-blue-600 text-white rounded-full transform hover:scale-105 transition duration-300 relative"
+            >
+              {connectedAddress ? (
+                <>
+                  {/* Display truncated address */}
+                  <span className="truncate">{connectedAddress}</span>
+                  {/* Display tooltip with full address */}
+                  {showTooltip && (
+                    <span className="tooltip">
+                      {connectedAddress}
+                    </span>
+                  )}
+                </>
+              ) : (
+                'Connect Wallet'
+              )}
             </button>
           </motion.div>
         </div>
